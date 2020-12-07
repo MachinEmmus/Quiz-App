@@ -21,6 +21,5 @@ saveHighScore = (e) => {
     highScores.sort((a, b) => b.Score - a.Score);
     highScores.splice(5);
     localStorage.setItem('highScores', JSON.stringify(highScores));
-    console.log(highScores);
-    //window.location.assign("../html/index.html");
+    window.location.assign("/");
 };
