@@ -1,7 +1,8 @@
 const question = document.getElementById("question");
 const choices = Array.from(document.getElementsByClassName("choice-text"));
-const questionCounterText = document.getElementById('questionCounter');
+const progressText = document.getElementById('progressText');
 const scoreText = document.getElementById('score');
+const progressBarFull = document.getElementById("progressBarFull");
 
 let currentQuestion = {};
 let acceptingAnswer = true;
@@ -49,12 +50,15 @@ startGame = () => {
 
 getNewQuestion = () => {
     if (availableQuestion.length === 0 || questionCounter >= MAX_QUESTIONS) {
+        localStorage.setItem("mostRecentScore", score);
         //go to the end page
-        return window.location.assign('/end.html');
+        return window.location.assign('../html/end.html');
     }
 
     questionCounter++;
-    questionCounterText.innerText =  `${questionCounter}/${MAX_QUESTIONS}`;
+    progressText.innerText =  `Question ${questionCounter}/${MAX_QUESTIONS}`;
+
+    progressBarFull.style.width = `${(questionCounter / MAX_QUESTIONS) * 100}%`;
 
     const questionIndex = Math.floor(Math.random() * availableQuestion.length);
     currentQuestion = availableQuestion[questionIndex];
@@ -77,17 +81,16 @@ choices.forEach((choice) => {
         const selectedChoice = e.target;
         const selectedAnswer = selectedChoice.dataset["number"];
 
-        const classToApply = 
-            selectedAnswer === currentQuestion.answer ? "correct" : "incorrect";
+        const classToApply = selectedAnswer == currentQuestion.answer ? "correct" : "incorrect";
 
         if (classToApply === "correct") {
             incrementScore(CORRECT_BONUS);
         }    
         
-        selectedChoice.parentElement.classList.add(classToApply);
+        selectedChoice.classList.add(classToApply);
         
         setTimeout(() => {
-            selectedChoice.parentElement.classList.remove(classToApply);
+            selectedChoice.classList.remove(classToApply);
             getNewQuestion();
         }, 1000); 
     });
